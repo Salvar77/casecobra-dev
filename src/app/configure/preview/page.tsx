@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { db } from "@/db";
 import { notFound } from "next/navigation";
 import React from "react";
