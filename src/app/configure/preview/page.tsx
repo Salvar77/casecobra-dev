@@ -4,13 +4,13 @@ import React from "react";
 import DesignPreview from "./DesignPreview";
 
 interface PageProps {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: URLSearchParams;
 }
 
 const Page = async ({ searchParams }: PageProps) => {
-  const id = searchParams?.id;
+  const id = searchParams.get("id");
 
-  if (!id || typeof id !== "string") {
+  if (!id) {
     return notFound();
   }
 
