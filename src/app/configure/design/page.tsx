@@ -10,7 +10,7 @@ interface PageProps {
 }
 
 const Page = async ({ searchParams }: PageProps) => {
-  // @ts-ignore: searchParams jest synchroniczny w App Router
+  // @ts-expect-error: searchParams jest synchroniczny w App Router
   const { id } = searchParams;
 
   if (!id || typeof id !== "string") {
