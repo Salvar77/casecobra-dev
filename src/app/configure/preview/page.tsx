@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { db } from "@/db";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -12,8 +10,8 @@ interface PageProps {
 }
 
 const Page = async ({ searchParams }: PageProps) => {
-  const resolvedSearchParams = await searchParams;
-  const { id } = resolvedSearchParams;
+  // @ts-ignore: searchParams jest synchronizowany w App Router
+  const { id } = searchParams;
 
   if (!id || typeof id !== "string") {
     return notFound();
