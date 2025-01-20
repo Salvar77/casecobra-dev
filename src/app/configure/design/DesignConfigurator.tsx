@@ -132,11 +132,10 @@ const DesignConfigurator = ({
       const file = new File([blob], "filename.png", { type: "image/png" });
 
       await startUpload([file], { configId });
-    } catch (err) {
+    } catch {
       toast({
-        title: "Coś poszło nie tak",
-        description:
-          "Jest problem z zapisaniem twoich danych, spróbuj ponownie",
+        title: "Błąd zapisu",
+        description: "Nie udało się zapisać konfiguracji. Spróbuj ponownie.",
         variant: "destructive",
       });
     }
