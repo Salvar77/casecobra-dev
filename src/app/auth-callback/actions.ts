@@ -18,14 +18,5 @@ export const getAuthStatus = async () => {
 
   console.log("Existing user in database:", existingUser);
 
-  if (!existingUser) {
-    await db.user.create({
-      data: {
-        id: user.id,
-        email: user.email,
-      },
-    });
-  }
-
   return { success: true };
 };
