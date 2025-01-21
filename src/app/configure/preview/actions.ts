@@ -72,7 +72,7 @@ export const createCheckoutSession = async ({
     mode: "payment",
     shipping_address_collection: { allowed_countries: ["DE", "US"] },
     metadata: {
-      userid: user.id,
+      userId: user.id,
       orderId: order.id,
     },
     line_items: [{ price: product.default_price as string, quantity: 1 }],

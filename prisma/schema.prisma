@@ -12,9 +12,9 @@ datasource db {
 // ----------------------------------
 
 enum OrderStatus {
+  awaiting_shipment
   fulfilled
   shipped
-  awaiting_shipment
 }
 
 enum PhoneModel {

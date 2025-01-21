@@ -3,11 +3,18 @@ import { stripe } from "@/lib/stripe";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
+import { Resend } from "resend";
+import OrderReceivedEmail from "@/components/emails/OrderReceivedEmail";
+
+export const runtime = "nodejs";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: Request) {
   try {
     const body = await req.text();
-    const signature = headers().get("stripe-signature");
+    const rawHeaders = await headers();
+    const signature = rawHeaders.get("stripe-signature");
 
     if (!signature) {
       return new Response("Invalid signatur", { status: 400 });
@@ -26,19 +33,19 @@ export async function POST(req: Request) {
 
       const session = event.data.object as Stripe.Checkout.Session;
 
-      const { userId, orderId } = session.metadata || {
-        userId: null,
+      const { userid, orderId } = session.metadata || {
+        userid: null,
         orderId: null,
       };
 
-      if (!userId || !orderId) {
+      if (!userid || !orderId) {
         throw new Error("Invalid request metadata");
       }
 
       const billingAddress = session.customer_details!.address;
       const shippingAddress = session.shipping_details!.address;
 
-      await db.order.update({
+      const updatedOrder = await db.order.update({
         where: {
           id: orderId,
         },
@@ -65,6 +72,25 @@ export async function POST(req: Request) {
             },
           },
         },
+      });
+
+      await resend.emails.send({
+        from: "CaseCobra<lukaszkus77@gmail.com>",
+        to: [event.data.object.customer_details.email],
+        subject: "Dziękujemy za twoje zamówienie!",
+        react: OrderReceivedEmail({
+          orderId,
+          orderDate: updatedOrder.createdAt.toLocaleDateString(),
+          // @ts-ignore
+          shippingAddress: {
+            name: session.customer_details!.name!,
+            city: shippingAddress!.city!,
+            country: shippingAddress!.country!,
+            postalCode: shippingAddress!.postal_code!,
+            street: shippingAddress!.line1!,
+            state: shippingAddress?.state,
+          },
+        }),
       });
     }
 
