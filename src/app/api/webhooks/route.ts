@@ -33,12 +33,12 @@ export async function POST(req: Request) {
 
       const session = event.data.object as Stripe.Checkout.Session;
 
-      const { userid, orderId } = session.metadata || {
-        userid: null,
+      const { userId, orderId } = session.metadata || {
+        userId: null,
         orderId: null,
       };
 
-      if (!userid || !orderId) {
+      if (!userId || !orderId) {
         throw new Error("Invalid request metadata");
       }
 
